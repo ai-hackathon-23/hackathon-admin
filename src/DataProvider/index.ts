@@ -1,12 +1,8 @@
 import { stringify } from "query-string";
 import { fetchUtils, DataProvider } from "ra-core";
+import { headers } from "next/headers";
 
 /**
- * Maps react-admin queries to a simple REST API
- *
- * This REST dialect is similar to the one of FakeRest
- *
- * @see https://github.com/marmelab/FakeRest
  *
  * @example
  *
@@ -33,7 +29,27 @@ import { fetchUtils, DataProvider } from "ra-core";
  *
  * export default App;
  */
-export default (
+
+const contentType = "Content-Type";
+const xFormUrlEncoded = "x-www-form-urlencoded";
+// const countHeader = 'Content-Range'
+
+const defaultHeaders = (): Headers => {
+  // set headers
+  let headers = new Headers({});
+
+  headers.set("Content-Type", "application/x-www-form-urlencoded");
+  return headers;
+};
+const getSearchParams = (data: any) => {
+  const bodyParams = new URLSearchParams();
+
+  Object.keys(data).forEach((key) => bodyParams.append(key, data[key]));
+
+  return bodyParams;
+};
+
+export const restDataProvider = (
   apiUrl: string,
   httpClient = fetchUtils.fetchJson,
   countHeader: string = "Content-Range"
@@ -51,15 +67,10 @@ export default (
       filter: JSON.stringify(params.filter),
     };
     const url = `${apiUrl}/${resource}?${stringify(query)}`;
-    const options =
-      countHeader === "Content-Range"
-        ? {
-            // Chrome doesn't return `Content-Range` header if no `Range` is provided in the request.
-            headers: new Headers({
-              Range: `${resource}=${rangeStart}-${rangeEnd}`,
-            }),
-          }
-        : {};
+
+    let options = {
+      headers: defaultHeaders(),
+    };
 
     return httpClient(url, options).then(({ headers, json }) => {
       if (!headers.has(countHeader)) {
@@ -69,28 +80,38 @@ export default (
       }
       return {
         data: json,
-        total:
-          countHeader === "Content-Range"
-            ? parseInt(headers.get("content-range").split("/").pop(), 10)
-            : parseInt(headers.get(countHeader.toLowerCase())),
+        total: json.length,
       };
     });
   },
 
-  getOne: (resource, params) =>
-    httpClient(`${apiUrl}/${resource}/${params.id}`).then(({ json }) => ({
-      data: json,
-    })),
+  getOne: (resource, params) => {
+    let options = {
+      headers: defaultHeaders(),
+    };
+    return httpClient(`${apiUrl}/${resource}/${params.id}`, options).then(
+      ({ json }) => ({
+        data: json,
+      })
+    );
+  },
 
   getMany: (resource, params) => {
+    let options = {
+      headers: defaultHeaders(),
+    };
     const query = {
       filter: JSON.stringify({ id: params.ids }),
     };
     const url = `${apiUrl}/${resource}?${stringify(query)}`;
-    return httpClient(url).then(({ json }) => ({ data: json }));
+    return httpClient(url, options).then(({ json }) => ({ data: json }));
   },
 
   getManyReference: (resource, params) => {
+    let options = {
+      headers: defaultHeaders(),
+    };
+
     const { page, perPage } = params.pagination;
     const { field, order } = params.sort;
 
@@ -106,15 +127,15 @@ export default (
       }),
     };
     const url = `${apiUrl}/${resource}?${stringify(query)}`;
-    const options =
-      countHeader === "Content-Range"
-        ? {
-            // Chrome doesn't return `Content-Range` header if no `Range` is provided in the request.
-            headers: new Headers({
-              Range: `${resource}=${rangeStart}-${rangeEnd}`,
-            }),
-          }
-        : {};
+    // const options =
+    //     countHeader === 'Content-Range'
+    //         ? {
+    //             // Chrome doesn't return `Content-Range` header if no `Range` is provided in the request.
+    //             headers: new Headers({
+    //                 Range: `${resource}=${rangeStart}-${rangeEnd}`,
+    //             }),
+    //         }
+    //         : {};
 
     return httpClient(url, options).then(({ headers, json }) => {
       if (!headers.has(countHeader)) {
@@ -132,35 +153,50 @@ export default (
     });
   },
 
-  update: (resource, params) =>
-    httpClient(`${apiUrl}/${resource}/${params.id}`, {
-      method: "PUT",
-      body: JSON.stringify(params.data),
-    }).then(({ json }) => ({ data: json })),
+  update: (resource, params) => {
+    const bodyParams = new URLSearchParams();
+    const data = params.data;
+    Object.keys(data).forEach((key) => bodyParams.append(key, data[key]));
 
-  // simple-rest doesn't handle provide an updateMany route, so we fallback to calling update n times instead
-  updateMany: (resource, params) =>
-    Promise.all(
+    return httpClient(`${apiUrl}/${resource}/${params.id}`, {
+      method: "PUT",
+      body: bodyParams,
+      headers: defaultHeaders(),
+    }).then(({ json }) => ({ data: json }));
+  },
+
+  updateMany: (resource, params) => {
+    const bodyParams = new URLSearchParams();
+    const data = params.data;
+    Object.keys(data).forEach((key) => bodyParams.append(key, data[key]));
+
+    return Promise.all(
       params.ids.map((id) =>
         httpClient(`${apiUrl}/${resource}/${id}`, {
           method: "PUT",
-          body: JSON.stringify(params.data),
+          body: bodyParams,
+          headers: defaultHeaders(),
         })
       )
-    ).then((responses) => ({ data: responses.map(({ json }) => json.id) })),
+    ).then((responses) => ({ data: responses.map(({ json }) => json.id) }));
+  },
 
-  create: (resource, params) =>
-    httpClient(`${apiUrl}/${resource}`, {
+  create: (resource, params) => {
+    const bodyParams = new URLSearchParams();
+    const data = params.data;
+    Object.keys(data).forEach((key) => bodyParams.append(key, data[key]));
+
+    return httpClient(`${apiUrl}/${resource}`, {
       method: "POST",
-      body: JSON.stringify(params.data),
-    }).then(({ json }) => ({ data: json })),
+      body: bodyParams,
+      headers: defaultHeaders(),
+    }).then(({ json }) => ({ data: json }));
+  },
 
   delete: (resource, params) =>
     httpClient(`${apiUrl}/${resource}/${params.id}`, {
       method: "DELETE",
-      headers: new Headers({
-        "Content-Type": "text/plain",
-      }),
+      headers: defaultHeaders(),
     }).then(({ json }) => ({ data: json })),
 
   // simple-rest doesn't handle filters on DELETE route, so we fallback to calling DELETE n times instead
@@ -169,9 +205,7 @@ export default (
       params.ids.map((id) =>
         httpClient(`${apiUrl}/${resource}/${id}`, {
           method: "DELETE",
-          headers: new Headers({
-            "Content-Type": "text/plain",
-          }),
+          headers: defaultHeaders(),
         })
       )
     ).then((responses) => ({
