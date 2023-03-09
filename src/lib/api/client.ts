@@ -66,8 +66,12 @@ export function postClient(name: string, age: number, family_living_togethers: s
     age,
     family_living_togethers,
   }
+  var params = new URLSearchParams();
+  params.append('name', name);
+  params.append('age', age.toString());
+  params.append('family_living_togethers', family_living_togethers ?? '')
 
-  return api.post(url, req).catch(function (error: AxiosResponse) {
+  return api.post(url, params).catch(function (error: AxiosResponse) {
     console.log(error)
     return createErrorResponse(error)
   })
