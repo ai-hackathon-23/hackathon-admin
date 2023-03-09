@@ -4,7 +4,7 @@ import Client from "./client/client"
 function Index(): JSX.Element {
   return (
     <>
-      <Client></Client>
+      <Client />
     </>
   )
 }
