@@ -61,6 +61,11 @@ function createClientResponse(response: AxiosResponse): ClientResponse {
 
 export function postClient(name: string, age: number, family_living_togethers: string | null): Promise<ClientResponse> {
   const url = `/client`
+  const req = {
+    name,
+    age,
+    family_living_togethers,
+  }
   var params = new URLSearchParams();
   params.append('name', name);
   params.append('age', age.toString());
