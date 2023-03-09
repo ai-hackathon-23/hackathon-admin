@@ -11,7 +11,6 @@ function Client(): JSX.Element {
 
   const handleSubmit: FormEventHandler = async (e) => {
     e.preventDefault()
-    console.log(name, age, familiyLivingTogether)
     const result = await postClient(name, age, familiyLivingTogether)
 
     if (result.status === StatusCodes.OK) {
