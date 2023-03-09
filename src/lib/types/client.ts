@@ -2,6 +2,5 @@ export type ClientType = {
   id: number
   name: string
   age: number
-  disese: string
-  family_living_together: string | null
+  family_living_togethers: string | null
 }

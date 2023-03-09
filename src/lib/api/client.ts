@@ -8,15 +8,14 @@ export interface ClientsResponse extends BaseResponse {
   }
 }
 
-function createClientResponse(response: AxiosResponse): ClientsResponse {
+function createClientsResponse(response: AxiosResponse): ClientsResponse {
   const clients: ClientType[] = []
   for (let i = 0; i < response.data.length; i++) {
     clients.push({
       id: response.data[i].id,
       name: response.data[i].name,
       age: response.data[i].age,
-      disese: response.data[i].disese,
-      family_living_together: response.data[i].family_living_together,
+      family_living_togethers: response.data[i].family_living_togethers,
     })
   }
 
@@ -32,10 +31,44 @@ export function getClients(): Promise<ClientsResponse> {
   return api
     .get(url)
     .then(function (response: AxiosResponse) {
-      return createClientResponse(response)
+      return createClientsResponse(response)
     })
     .catch(function (error: AxiosResponse) {
       console.log(error)
       return createErrorResponse(error)
     })
+}
+
+export interface ClientResponse extends BaseResponse {
+  data?: {
+    client: ClientType
+  }
+}
+
+function createClientResponse(response: AxiosResponse): ClientResponse {
+  const client: ClientType = {
+    id: response.data.id,
+    name: response.data.name,
+    age: response.data.age,
+    family_living_togethers: response.data.family_living_togethers,
+  }
+
+  return {
+    status: response.status,
+    data: { client },
+  }
+}
+
+export function postClient(name: string, age: number, family_living_togethers: string | null): Promise<ClientResponse> {
+  const url = `/client`
+  const req = {
+    name,
+    age,
+    family_living_togethers,
+  }
+
+  return api.post(url, req).catch(function (error: AxiosResponse) {
+    console.log(error)
+    return createErrorResponse(error)
+  })
 }
