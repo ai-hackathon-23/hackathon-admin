@@ -1,8 +1,6 @@
 import React, { useState, ChangeEvent, FormEventHandler } from "react"
 import { If, Then } from "react-if"
 import { StatusCodes } from "http-status-codes"
-import { ClientType } from "../../lib/types/client"
-import { getClients } from "../../lib/api/client"
 import { postClient } from "../../lib/api/client"
 
 function Client(): JSX.Element {
