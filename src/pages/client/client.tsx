@@ -28,23 +28,35 @@ function Client(): JSX.Element {
 
   return (
     <>
-      <div>
+      <h2>利用者登録</h2>
+      <div className="form-block">
         <form onSubmit={handleSubmit}>
-          <input
-            value={name}
-            placeholder="名前"
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setName(event.target.value)}
-          />
-          <input
-            value={age}
-            placeholder="年齢"
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setAge(Number(event.target.value))}
-          />
-          <input
-            value={familiyLivingTogether}
-            placeholder="家族構成"
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setFamilyLivingTogether(event.target.value)}
-          />
+          <section className="form-section">
+            <div>名前</div>
+            <input
+              value={name}
+              placeholder="名前"
+              onChange={(event: ChangeEvent<HTMLInputElement>) => setName(event.target.value)}
+            />
+          </section>
+
+          <section className="form-section">
+            <div>年齢</div>
+            <input
+              value={age}
+              placeholder="年齢"
+              onChange={(event: ChangeEvent<HTMLInputElement>) => setAge(Number(event.target.value))}
+            />
+          </section>
+
+          <section className="form-section">
+            <div>家族構成</div>
+            <input
+              value={familiyLivingTogether}
+              placeholder="家族構成"
+              onChange={(event: ChangeEvent<HTMLInputElement>) => setFamilyLivingTogether(event.target.value)}
+            />
+          </section>
           <div>
             <If condition={message}>
               <Then>
@@ -52,7 +64,9 @@ function Client(): JSX.Element {
               </Then>
             </If>
           </div>
-          <button type="submit">登録</button>
+          <button className="button-default" type="submit">
+            登録
+          </button>
         </form>
       </div>
     </>

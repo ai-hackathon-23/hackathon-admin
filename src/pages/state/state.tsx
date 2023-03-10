@@ -56,42 +56,43 @@ function State(): JSX.Element {
           )}
         </table>
       </div>
-      <h2>病状登録</h2>
-      <div className="form-block">
+      <div>
         <form onSubmit={handleSubmit}>
-          <section className="form-section">
+          <section>
             <div>病名</div>
             <input
               className=""
               value={disease}
+              placeholder="病名"
               onChange={(event: ChangeEvent<HTMLInputElement>) => setDisease(event.target.value)}
             />
           </section>
 
-          <section className="form-section">
+          <section>
             <div>処置名</div>
             <input
               value={treatments}
+              placeholder="行った処置"
               onChange={(event: ChangeEvent<HTMLInputElement>) => setTreatments(event.target.value)}
             />
           </section>
-          <section className="form-section">
+          <section>
             <div>処方薬</div>
             <input
               value={medicines}
+              placeholder="処方した薬"
               onChange={(event: ChangeEvent<HTMLInputElement>) => setMedicines(event.target.value)}
             />
           </section>
-          <section className="form-section">
+          <section>
             <div>対応方針</div>
             <input
               value={treatmentPolicy}
+              placeholder="対応方針"
               onChange={(event: ChangeEvent<HTMLInputElement>) => setTreatmentPolicy(event.target.value)}
             />
           </section>
-          <button className="button-default" type="submit">
-            登録
-          </button>
+          <button type="submit">登録</button>
         </form>
       </div>
     </>
