@@ -43,3 +43,9 @@ a {
   display: block;
   margin: 0 auto;
 }
+
+.button-focused {
+  box-sizing: border-box;
+  background: #e4fdff;
+  cursor: pointer;
+}

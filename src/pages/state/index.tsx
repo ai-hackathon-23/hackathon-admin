@@ -45,11 +45,14 @@ function State(): JSX.Element {
             <p>Clients</p>
           </thead> */}
           {React.Children.toArray(
-            clients.slice().map((clients: ClientType, index: number) => (
+            clients.slice().map((client: ClientType, index: number) => (
               <tr key={index}>
-                <button onClick={() => setClientId(clients.id)}>
-                  <td>{clients.id}</td>
-                  <td>{clients.name}</td>
+                <button
+                  className={client.id === clientId ? "button-focused" : ""}
+                  onClick={() => setClientId(client.id)}
+                >
+                  <td>{client.id}</td>
+                  <td>{client.name}</td>
                 </button>
               </tr>
             ))
