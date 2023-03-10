@@ -96,9 +96,12 @@ function State(): JSX.Element {
               </section>
               <section className="form-section">
                 <div>対応方針</div>
-                <input
+                <textarea
+                  name="postContent"
                   value={treatmentPolicy}
-                  onChange={(event: ChangeEvent<HTMLInputElement>) => setTreatmentPolicy(event.target.value)}
+                  onChange={(e) => setTreatmentPolicy(e.target.value)}
+                  rows={4}
+                  cols={40}
                 />
               </section>
               <button className="button-default" type="submit">
