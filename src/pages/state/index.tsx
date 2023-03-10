@@ -48,24 +48,38 @@ function State(): JSX.Element {
         </section>
         <section className="right-block">
           <div>
-            <table>
-              {/* <thead>
-            <p>Clients</p>
-          </thead> */}
-              {React.Children.toArray(
-                clients.slice().map((client: ClientType, index: number) => (
-                  <tr key={index}>
-                    <button
-                      className={client.id === clientId ? "button-focused" : ""}
-                      onClick={() => setClientId(client.id)}
-                    >
-                      <td>{client.id}</td>
-                      <td>{client.name}</td>
-                    </button>
-                  </tr>
-                ))
-              )}
-            </table>
+          <table>
+  <thead>
+    <tr>
+      <th></th>
+      <th>ID</th>
+      <th>名前</th>
+      <th>年齢</th>
+    </tr>
+  </thead>
+  <tbody>
+  {clients.slice().map((client: ClientType, index: number) => (
+    <tr key={index}>
+      <td>          <input
+            type="checkbox"
+            name="client"
+            value={client.id}
+            checked={client.id === clientId}
+            onChange={() => setClientId(client.id)}
+          /></td>
+      <td>
+        <label>
+
+          <span className="radio-label">{client.id}</span>
+        </label>
+      </td>
+      <td>{client.name}</td>
+      <td>{client.age}歳</td>
+    </tr>
+  ))}
+</tbody>
+
+</table>
           </div>
 
           <h2>病状登録</h2>
