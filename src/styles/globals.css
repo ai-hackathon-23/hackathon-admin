@@ -49,3 +49,22 @@ a {
   background: #e4fdff;
   cursor: pointer;
 }
+
+.main {
+  display: flex;
+  gap: 30px;
+  margin: 20px 20px;
+}
+
+.sidebar-block {
+  display: block;
+  width: 100px;
+
+  display: block;
+  font-size: 15px;
+  font-weight: bold;
+  height: 25px;
+  line-height: 25px;
+  padding-left: 10px;
+  background: #eee;
+}
